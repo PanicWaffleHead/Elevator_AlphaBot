@@ -11,6 +11,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public static final class ElevatorConstants {
         public static double L_ONE_HEIGHT = 0.43;
+        public static final int LEFT_ELEVATOR_MOTOR_ID = 7;
+        public static final int RIGHT_ELEVATOR_MOTOR_ID = 10; 
     }
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
