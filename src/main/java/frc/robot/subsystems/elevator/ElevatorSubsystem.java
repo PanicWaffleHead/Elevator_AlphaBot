@@ -1,8 +1,7 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase{
@@ -13,6 +12,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         public static double L_ONE_HEIGHT = 0.43;
         public static final int LEFT_ELEVATOR_MOTOR_ID = 7;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 10; 
+        public static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946;
     }
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
@@ -20,11 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     
     public Command goToSetPointCommand(double position) {
-        return this.runOnce(() -> goToSetPoint(position));
-    }
-
-    public void goToSetPoint(double position) {
-        return;
+        return this.runOnce(() -> elevatorIO.setPosition(position));
     }
 
     public Command setSpeed(double speed) {

@@ -1,12 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorConstants;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
 
@@ -24,7 +21,7 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-      //elevator.setDefaultCommand(elevator.setSpeed(0));
+      elevator.setDefaultCommand(elevator.setSpeed(0));
   }
 
   private void configureBindings() {
