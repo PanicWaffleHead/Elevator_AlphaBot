@@ -13,6 +13,9 @@ public class ElevatorSubsystem extends SubsystemBase{
         public static final int LEFT_ELEVATOR_MOTOR_ID = 7;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 10; 
         public static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946;
+        public static final double ALLOWED_SETPOINT_ERROR = Units.inchesToMeters(1);
+        public static final double MAX_VEL = 0.8;
+        public static final double MAX_ACCEL = 0.4;
     }
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {

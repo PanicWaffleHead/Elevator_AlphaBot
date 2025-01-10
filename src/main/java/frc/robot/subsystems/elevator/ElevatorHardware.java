@@ -47,16 +47,14 @@ public class ElevatorHardware implements ElevatorIO {
         .p(0.0001, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
-        .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
+        //https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
+        .velocityFF(1.0 / 917, ClosedLoopSlot.kSlot1) 
         .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.closedLoop.maxMotion
-            .maxVelocity(1000)
-            .maxAcceleration(1000)
-            .allowedClosedLoopError(1)
-            .maxAcceleration(500, ClosedLoopSlot.kSlot1)
-            .maxVelocity(6000, ClosedLoopSlot.kSlot1)
-            .allowedClosedLoopError(1,ClosedLoopSlot.kSlot1);
+            .maxVelocity(ElevatorConstants.MAX_VEL)
+            .maxAcceleration(ElevatorConstants.MAX_ACCEL)
+            .allowedClosedLoopError(ElevatorConstants.ALLOWED_SETPOINT_ERROR);
 
         rightMotorConfigLeader.apply(globalMotorConfig).inverted(true);
 
