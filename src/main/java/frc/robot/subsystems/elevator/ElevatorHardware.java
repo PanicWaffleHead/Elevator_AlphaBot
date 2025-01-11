@@ -20,7 +20,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorConstants;
 public class ElevatorHardware implements ElevatorIO {
     public SparkMax elevatorRightMotorLeader, elevatorLeftMotorFollower;
     private SparkMaxConfig globalMotorConfig, rightMotorConfigLeader, leftMotorConfigFollower;
-    private SparkClosedLoopController rightClosedLoopController, leftClosedLoopController;
+    private SparkClosedLoopController rightClosedLoopController;
     private RelativeEncoder rightEncoder;
     private double position;
     
@@ -28,7 +28,6 @@ public class ElevatorHardware implements ElevatorIO {
         elevatorRightMotorLeader = new SparkMax(ElevatorConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         elevatorLeftMotorFollower = new SparkMax(ElevatorConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         rightClosedLoopController = elevatorRightMotorLeader.getClosedLoopController();
-        leftClosedLoopController = elevatorLeftMotorFollower.getClosedLoopController();
 
         rightEncoder = elevatorRightMotorLeader.getEncoder();
 
@@ -70,13 +69,11 @@ public class ElevatorHardware implements ElevatorIO {
     @Override
     public void setSpeed(double speed) {
         rightClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
-        leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
     }
 
     @Override
     public void setPosition(double position) {
         rightClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
         this.position = position;
     }
