@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveControlConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorConstants;
+import static edu.wpi.first.units.Units.*;
 
 public class RobotContainer {
 
@@ -25,7 +26,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    operatorController.y().onTrue(elevator.goToSetPointCommand(ElevatorConstants.L_ONE_HEIGHT));
+    operatorController.y().onTrue(elevator.goToSetPointCommand(ElevatorConstants.L_ONE_HEIGHT.in(Meters)));
   }
 
 }

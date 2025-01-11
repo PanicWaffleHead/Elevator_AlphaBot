@@ -1,6 +1,11 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
+
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -9,13 +14,13 @@ public class ElevatorSubsystem extends SubsystemBase{
     private final ElevatorIO elevatorIO;
 
     public static final class ElevatorConstants {
-        public static double L_ONE_HEIGHT = 0.46;
+        public static Distance L_ONE_HEIGHT = Centimeters.of(46); 
         public static final int LEFT_ELEVATOR_MOTOR_ID = 7;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 10; 
         public static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946;
-        public static final double ALLOWED_SETPOINT_ERROR = Units.inchesToMeters(1);
-        public static final double MAX_VEL = 0.8;
-        public static final double MAX_ACCEL = 0.4;
+        public static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(1); 
+        public static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
+        public static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
     }
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
@@ -27,7 +32,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public Command setSpeed(double speed) {
-        return this.runOnce(() -> elevatorIO.setSpeed(speed));
+        return this.run(() -> elevatorIO.setSpeed(speed));
     }
 
 }

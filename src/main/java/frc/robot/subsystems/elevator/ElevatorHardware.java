@@ -1,5 +1,9 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -52,9 +56,9 @@ public class ElevatorHardware implements ElevatorIO {
         .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
         globalMotorConfig.closedLoop.maxMotion
-            .maxVelocity(ElevatorConstants.MAX_VEL)
-            .maxAcceleration(ElevatorConstants.MAX_ACCEL)
-            .allowedClosedLoopError(ElevatorConstants.ALLOWED_SETPOINT_ERROR);
+            .maxVelocity(ElevatorConstants.MAX_VEL.in(MetersPerSecond))
+            .maxAcceleration(ElevatorConstants.MAX_ACCEL.in(MetersPerSecondPerSecond))
+            .allowedClosedLoopError(ElevatorConstants.ALLOWED_SETPOINT_ERROR.in(Meters));
 
         rightMotorConfigLeader.apply(globalMotorConfig).inverted(true);
 
