@@ -15,15 +15,14 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorConstants;
 
 public class ElevatorHardware implements ElevatorIO {
     public SparkMax elevatorRightMotorLeader, elevatorLeftMotorFollower;
     private SparkMaxConfig globalMotorConfig, rightMotorConfigLeader, leftMotorConfigFollower;
-    private SparkClosedLoopController rightClosedLoopController;
-    private SparkClosedLoopController leftClosedLoopController;
+    private SparkClosedLoopController rightClosedLoopController, leftClosedLoopController;
     private RelativeEncoder rightEncoder;
+    private double position;
     
     public ElevatorHardware() {
         elevatorRightMotorLeader = new SparkMax(ElevatorConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
@@ -66,27 +65,37 @@ public class ElevatorHardware implements ElevatorIO {
 
         elevatorLeftMotorFollower.configure(leftMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         elevatorRightMotorLeader.configure(rightMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-        SmartDashboard.setDefaultNumber("Target Position", 0);
-        SmartDashboard.setDefaultNumber("Target Velocity", 0);
-        SmartDashboard.setDefaultBoolean("Control Mode", false);
-        SmartDashboard.setDefaultBoolean("Reset Encoder", false);
     }
 
+    @Override
     public void setSpeed(double speed) {
-
+        rightClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+        leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
     }
 
+    @Override
     public void setPosition(double position) {
         rightClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+        this.position = position;
     }
 
-    public double getSpeed() {
+    @Override
+    public double getVelocity() {
         return rightEncoder.getVelocity();
     }
 
+    @Override
     public double getPosition() {
         return rightEncoder.getPosition();
+    }
+
+    @Override
+    public void updateInputs(ElevatorIOInputs inputs) {
+        inputs.position = getPosition();
+        inputs.velocity = getVelocity();
+        inputs.appliedVoltage = elevatorRightMotorLeader.getAppliedOutput() * 12;
+        inputs.positionSetPoint = position;
     }
 }

@@ -1,17 +1,23 @@
 package frc.robot.subsystems.elevator;
 
-public class ElevatorPlacebo {
+public class ElevatorPlacebo implements ElevatorIO {
     
-
+    @Override
     public void setSpeed(double speed) {}
 
+    @Override
     public void setPosition(double position) {}
 
-    public double getSpeed() {
+    @Override
+    public double getVelocity() {
         return 0.0;
     }
 
+    @Override
     public double getPosition() {
         return 0.0;
     }
+
+    @Override
+    public void updateInputs(ElevatorIOInputs inputs) {}
 }
