@@ -114,7 +114,12 @@ public class ElevatorHardware implements ElevatorIO {
     }
 
     @Override
-    public void updateInputs(ElevatorIOInputs inputs) {
+    public void setPercentOutput(double percentOutput) {
+        elevatorRightMotorLeader.set(percentOutput);
+    }
+
+    @Override
+    public void updateStates(ElevatorIOInputs inputs) {
         inputs.position = getPosition();
         inputs.velocity = getVelocity();
         inputs.appliedVoltage = elevatorRightMotorLeader.getAppliedOutput() * 12;

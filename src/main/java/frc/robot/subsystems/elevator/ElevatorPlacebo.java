@@ -18,6 +18,8 @@ public class ElevatorPlacebo implements ElevatorIO {
         return 0.0;
     }
 
+    public void setPercentOutput(double percentOutput) {}
+
     @Override
-    public void updateInputs(ElevatorIOInputs inputs) {}
+    public void updateStates(ElevatorIOInputs inputs) {}
 }

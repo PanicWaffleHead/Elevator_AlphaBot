@@ -15,6 +15,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
     }
+
+    public void setPercentOutput(double percentOutput) {}
     
     public Command goToSetPointCommand(double position) {
         return this.runOnce(() -> elevatorIO.setPosition(position));
@@ -24,13 +26,17 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.run(() -> elevatorIO.setSpeed(speed));
     }
 
+    public Command setPercentOutCommand(double percentOutput) {
+        
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elevator/position", inputs.position);
         SmartDashboard.putNumber("Elevator/velocity", inputs.velocity);
         SmartDashboard.putNumber("Elevator/appliedVoltage", inputs.appliedVoltage);
         SmartDashboard.putNumber("Elevator/positionSetPoint", inputs.positionSetPoint);
-        elevatorIO.updateInputs(inputs);
+        elevatorIO.updateStates(inputs);
     }
 
 }
