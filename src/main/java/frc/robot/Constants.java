@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Centimeters;
+
+import edu.wpi.first.units.measure.Distance;
+
 public final class Constants {
 
   public static class SetpointConstants {
+    public static Distance L_ONE_HEIGHT = Centimeters.of(46); 
 
   }
 
