@@ -85,8 +85,8 @@ public class ElevatorHardware implements ElevatorIO {
 
         leftMotorConfigFollower.apply(globalMotorConfig).follow(elevatorRightMotorLeader);
 
-        elevatorLeftMotorFollower.configure(leftMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-        elevatorRightMotorLeader.configure(rightMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        elevatorLeftMotorFollower.configure(leftMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorRightMotorLeader.configure(rightMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
