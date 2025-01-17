@@ -9,6 +9,9 @@ public class ElevatorPlacebo implements ElevatorIO {
     public void setPosition(double position) {}
 
     @Override
+    public void setEncoderPosition(double position) {}
+
+    @Override
     public double getVelocity() {
         return 0.0;
     }

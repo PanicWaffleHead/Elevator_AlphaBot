@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
@@ -81,7 +82,11 @@ public class ElevatorHardware implements ElevatorIO {
             .maxAcceleration(ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond))
             .allowedClosedLoopError(ElevatorHardwareConstants.ALLOWED_SETPOINT_ERROR.in(Meters));
 
-        rightMotorConfigLeader.apply(globalMotorConfig).inverted(true);
+        rightMotorConfigLeader
+            .apply(globalMotorConfig)
+            .inverted(true)
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(50);
 
         leftMotorConfigFollower.apply(globalMotorConfig).follow(elevatorRightMotorLeader);
 
@@ -101,6 +106,11 @@ public class ElevatorHardware implements ElevatorIO {
         rightClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
 
         this.position = position;
+    }
+
+    @Override
+    public void setEncoderPosition(double position) {
+        rightEncoder.setPosition(position);
     }
 
     @Override

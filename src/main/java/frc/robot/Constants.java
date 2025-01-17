@@ -12,7 +12,6 @@ public final class Constants {
 
   public static class SetpointConstants {
     public static Distance L_ONE_HEIGHT = Centimeters.of(46); 
-
   }
 
   public static class DriveControlConstants {

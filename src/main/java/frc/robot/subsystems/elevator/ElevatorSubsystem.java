@@ -16,18 +16,20 @@ public class ElevatorSubsystem extends SubsystemBase{
         this.elevatorIO = elevatorIO;
     }
 
-    public void setPercentOutput(double percentOutput) {}
-    
+    public Command setEncoderPositionCommand(double position) {
+        return this.runOnce(() -> elevatorIO.setEncoderPosition(position));
+    }
+
     public Command goToSetPointCommand(double position) {
         return this.runOnce(() -> elevatorIO.setPosition(position));
     }
 
-    public Command setSpeed(double speed) {
+    public Command setSpeedCommand(double speed) {
         return this.run(() -> elevatorIO.setSpeed(speed));
     }
 
     public Command setPercentOutCommand(double percentOutput) {
-        
+        return this.run(() -> elevatorIO.setPercentOutput(percentOutput));
     }
 
     @Override
