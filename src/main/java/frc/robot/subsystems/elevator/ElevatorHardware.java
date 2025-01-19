@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -31,7 +32,7 @@ public class ElevatorHardware implements ElevatorIO {
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(1); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
-        private static final double P_VALUE = 0.1;
+        private static final double P_VALUE = 0.6;
         private static final double I_VALUE = 0;
         private static final double D_VALUE = 0.1;
         private static final double FEEDFORWARD_VALUE = 1.0 / 917;
@@ -54,11 +55,11 @@ public class ElevatorHardware implements ElevatorIO {
         rightMotorConfigLeader = new SparkMaxConfig();
         leftMotorConfigFollower = new SparkMaxConfig();
 
-        rightEncoder = elevatorRightMotorLeader.getEncoder();
-
         elevatorRightMotorLeader = new SparkMax(ElevatorHardwareConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         elevatorLeftMotorFollower = new SparkMax(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         rightClosedLoopController = elevatorRightMotorLeader.getClosedLoopController();
+
+        rightEncoder = elevatorRightMotorLeader.getEncoder();
 
         globalMotorConfig.encoder
             .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION)
@@ -76,7 +77,6 @@ public class ElevatorHardware implements ElevatorIO {
             //https://docs.revrobotics.com/revlib/spark/closed-loop/closed-loop-control-getting-started#f-parameter
             .velocityFF(ElevatorHardwareConstants.FEEDFORWARD_VALUE, ClosedLoopSlot.kSlot1) 
             .outputRange(ElevatorHardwareConstants.OUTPUTRANGE_MIN_VALUE, ElevatorHardwareConstants.OUTPUTRANGE_MAX_VALUE, ClosedLoopSlot.kSlot1);
-
         globalMotorConfig.closedLoop.maxMotion
             .maxVelocity(ElevatorHardwareConstants.MAX_VEL.in(MetersPerSecond))
             .maxAcceleration(ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond))
@@ -84,11 +84,16 @@ public class ElevatorHardware implements ElevatorIO {
 
         rightMotorConfigLeader
             .apply(globalMotorConfig)
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(50);
 
-        leftMotorConfigFollower.apply(globalMotorConfig).follow(elevatorRightMotorLeader);
+        leftMotorConfigFollower
+            .apply(globalMotorConfig)
+            .inverted(true)
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(50)
+            .follow(elevatorRightMotorLeader);
 
         elevatorLeftMotorFollower.configure(leftMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotorLeader.configure(rightMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -96,15 +101,14 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void setSpeed(double speed) {
-        //rightClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
-        rightClosedLoopController.setReference(speed, SparkBase.ControlType.kMAXMotionVelocityControl);
+        rightClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+        //rightClosedLoopController.setReference(speed, SparkBase.ControlType.kMAXMotionVelocityControl);
     }
 
     @Override
     public void setPosition(double position) {
-        //rightClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        rightClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
-
+        rightClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        //rightClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
         this.position = position;
     }
 
