@@ -33,6 +33,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.b().whileTrue(elevator.setPercentOutCommand(.1));
+    operatorController.a().whileTrue(arm.setPercentOutputCommand(.02));
   }
 
 }

@@ -43,23 +43,24 @@ public class ElevatorHardware implements ElevatorIO {
         private static final double D_VALUE_VELOCITY = 0;
     }
 
-    public SparkMax elevatorRightMotorLeader, elevatorLeftMotorFollower;
-    private SparkMaxConfig globalMotorConfig, rightMotorConfigLeader, leftMotorConfigFollower;
-    private SparkClosedLoopController rightClosedLoopController;
-    private RelativeEncoder rightEncoder;
+    public SparkMax elevatorRightMotorFollower, elevatorLeftMotorLeader;
+    private SparkMaxConfig globalMotorConfig, rightMotorConfigFollower, leftMotorConfigLeader;
+    private SparkClosedLoopController leftClosedLoopController;
+    private RelativeEncoder rightEncoder, leftEncoder;
     private double position;
     
     public ElevatorHardware() {
 
         globalMotorConfig = new SparkMaxConfig();
-        rightMotorConfigLeader = new SparkMaxConfig();
-        leftMotorConfigFollower = new SparkMaxConfig();
+        rightMotorConfigFollower = new SparkMaxConfig();
+        leftMotorConfigLeader = new SparkMaxConfig();
 
-        elevatorRightMotorLeader = new SparkMax(ElevatorHardwareConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        elevatorLeftMotorFollower = new SparkMax(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        rightClosedLoopController = elevatorRightMotorLeader.getClosedLoopController();
+        elevatorRightMotorFollower = new SparkMax(ElevatorHardwareConstants.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+        elevatorLeftMotorLeader = new SparkMax(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+        leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
-        rightEncoder = elevatorRightMotorLeader.getEncoder();
+        //rightEncoder = elevatorRightMotorLeader.getEncoder();
+        leftEncoder = elevatorLeftMotorLeader.getEncoder();
 
         globalMotorConfig.encoder
             .positionConversionFactor(ElevatorHardwareConstants.METERS_PER_REVOLUTION)
@@ -82,61 +83,60 @@ public class ElevatorHardware implements ElevatorIO {
             .maxAcceleration(ElevatorHardwareConstants.MAX_ACCEL.in(MetersPerSecondPerSecond))
             .allowedClosedLoopError(ElevatorHardwareConstants.ALLOWED_SETPOINT_ERROR.in(Meters));
 
-        rightMotorConfigLeader
-            .apply(globalMotorConfig)
-            .inverted(false)
-            .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(50);
-
-        leftMotorConfigFollower
+        leftMotorConfigLeader
             .apply(globalMotorConfig)
             .inverted(true)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(50)
-            .follow(elevatorRightMotorLeader);
+            .smartCurrentLimit(50);
 
-        elevatorLeftMotorFollower.configure(leftMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        elevatorRightMotorLeader.configure(rightMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotorConfigFollower
+            .follow(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, true)
+            .apply(globalMotorConfig);
+
+        elevatorLeftMotorLeader.configure(leftMotorConfigLeader, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorRightMotorFollower.configure(rightMotorConfigFollower, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
     public void setSpeed(double speed) {
-        rightClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
-        //rightClosedLoopController.setReference(speed, SparkBase.ControlType.kMAXMotionVelocityControl);
+        leftClosedLoopController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+        //leftClosedLoopController.setReference(speed, SparkBase.ControlType.kMAXMotionVelocityControl);
     }
 
     @Override
     public void setPosition(double position) {
-        rightClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        //rightClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
+        leftClosedLoopController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        //leftClosedLoopController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl);
+        
         this.position = position;
     }
 
     @Override
     public void setEncoderPosition(double position) {
-        rightEncoder.setPosition(position);
+        leftEncoder.setPosition(position);
     }
 
     @Override
     public double getVelocity() {
-        return rightEncoder.getVelocity();
+        return leftEncoder.getVelocity();
     }
 
     @Override
     public double getPosition() {
-        return rightEncoder.getPosition();
+        return leftEncoder.getPosition();
     }
 
     @Override
     public void setPercentOutput(double percentOutput) {
-        elevatorRightMotorLeader.set(percentOutput);
+        elevatorRightMotorFollower.set(percentOutput);
     }
 
     @Override
     public void updateStates(ElevatorIOInputs inputs) {
         inputs.position = getPosition();
         inputs.velocity = getVelocity();
-        inputs.appliedVoltage = elevatorRightMotorLeader.getAppliedOutput() * 12;
+        inputs.appliedVoltageRight = elevatorRightMotorFollower.getAppliedOutput() * elevatorRightMotorFollower.getBusVoltage();
+        inputs.appliedVoltageLeft = elevatorLeftMotorLeader.getAppliedOutput() * elevatorLeftMotorLeader.getBusVoltage();
         inputs.positionSetPoint = position;
     }
 }

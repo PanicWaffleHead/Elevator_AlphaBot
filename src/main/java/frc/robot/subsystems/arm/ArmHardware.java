@@ -95,4 +95,9 @@ public class ArmHardware implements ArmIO {
     public void setSpeed(double speed) {
         armClosedLoopController.setReference(speed, SparkBase.ControlType.kMAXMotionVelocityControl);
     }
+
+    @Override
+    public void setPercentOutput(double percentOutput) {
+        armMotor.set(percentOutput);
+    }
 }

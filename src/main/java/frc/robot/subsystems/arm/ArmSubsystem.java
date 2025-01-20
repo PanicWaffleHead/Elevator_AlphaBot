@@ -14,5 +14,9 @@ public class ArmSubsystem extends SubsystemBase {
     public Command setSpeedCommand(double speed) {
         return this.run(() -> armIO.setSpeed(speed));
     }    
+
+    public Command setPercentOutputCommand(double percentOutput) {
+        return this.startEnd(() -> armIO.setPercentOutput(percentOutput), () -> armIO.setPercentOutput(0));
+    }
     
 }

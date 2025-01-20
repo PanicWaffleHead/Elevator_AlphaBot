@@ -8,4 +8,6 @@ public class ArmPlacebo implements ArmIO {
     @Override
     public void setSpeed(double speed) {}
     
+    @Override
+    public void setPercentOutput(double percentOutput) {}
 }

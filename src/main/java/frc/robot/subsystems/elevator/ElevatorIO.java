@@ -5,7 +5,8 @@ public interface ElevatorIO {
     static class ElevatorIOInputs {
         public double position = 0.0; 
         public double velocity = 0.0;
-        public double appliedVoltage = 0.0;
+        public double appliedVoltageRight = 0.0;
+        public double appliedVoltageLeft = 0.0;
         public double positionSetPoint = 0.0;
     }
 
