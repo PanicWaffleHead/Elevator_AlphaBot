@@ -17,12 +17,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         elevatorIO.setEncoderPosition(0);
     }
 
-    public Command setEncoderPositionCommand(double position) {
-        return this.runOnce(() -> elevatorIO.setEncoderPosition(position));
+    public void setPosition(double position) {
+        elevatorIO.setEncoderPosition(position);
     }
 
     public Command goToSetPointCommand(double position) {
-        return this.runOnce(() -> elevatorIO.setPosition(position));
+        return this.startEnd(() -> elevatorIO.setPosition(position), () -> elevatorIO.setPosition(0));
     }
 
     public Command setSpeedCommand(double speed) {

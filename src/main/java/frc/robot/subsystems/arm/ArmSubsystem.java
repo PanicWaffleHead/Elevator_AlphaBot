@@ -16,7 +16,11 @@ public class ArmSubsystem extends SubsystemBase {
     }    
 
     public Command setPercentOutputCommand(double percentOutput) {
-        return this.startEnd(() -> armIO.setPercentOutput(percentOutput), () -> armIO.setPercentOutput(0));
+        return this.run(() -> armIO.setPercentOutput(percentOutput));
     }
+
+    // public Command setPercentOutputMoveCommand(double percentOutput) {
+    //     return this.startEnd(() -> armIO.setPercentOutput(percentOutput), () -> armIO.setPercentOutput(0));
+    // }
     
 }

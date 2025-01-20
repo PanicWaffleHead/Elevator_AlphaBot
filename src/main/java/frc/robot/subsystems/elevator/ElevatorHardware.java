@@ -32,7 +32,7 @@ public class ElevatorHardware implements ElevatorIO {
         private static final Distance ALLOWED_SETPOINT_ERROR = Inches.of(1); 
         private static final LinearVelocity MAX_VEL = MetersPerSecond.of(0.8);
         private static final LinearAcceleration MAX_ACCEL = MetersPerSecondPerSecond.of(0.4);
-        private static final double P_VALUE = 0.6;
+        private static final double P_VALUE = 1.2;
         private static final double I_VALUE = 0;
         private static final double D_VALUE = 0.1;
         private static final double FEEDFORWARD_VALUE = 1.0 / 917;
@@ -59,7 +59,7 @@ public class ElevatorHardware implements ElevatorIO {
         elevatorLeftMotorLeader = new SparkMax(ElevatorHardwareConstants.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         leftClosedLoopController = elevatorLeftMotorLeader.getClosedLoopController();
 
-        //rightEncoder = elevatorRightMotorLeader.getEncoder();
+        //rightEncoder = elevatorRightMotorFollower.getEncoder();
         leftEncoder = elevatorLeftMotorLeader.getEncoder();
 
         globalMotorConfig.encoder
@@ -85,7 +85,7 @@ public class ElevatorHardware implements ElevatorIO {
 
         leftMotorConfigLeader
             .apply(globalMotorConfig)
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(50);
 
@@ -128,7 +128,7 @@ public class ElevatorHardware implements ElevatorIO {
 
     @Override
     public void setPercentOutput(double percentOutput) {
-        elevatorRightMotorFollower.set(percentOutput);
+        elevatorLeftMotorLeader.set(percentOutput);
     }
 
     @Override

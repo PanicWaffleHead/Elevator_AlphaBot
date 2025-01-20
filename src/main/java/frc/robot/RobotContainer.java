@@ -20,21 +20,19 @@ public class RobotContainer {
     DriveControlConstants.OPERATOR_CONTROLLER_PORT);
 
   public RobotContainer() {
-    elevator.setEncoderPositionCommand(0);
-    arm.setSpeedCommand(0);
+    elevator.setPosition(0);
     configureBindings();
     configureDefaultCommands();
   }
 
   private void configureDefaultCommands() {
       elevator.setDefaultCommand(elevator.setSpeedCommand(0));
-      arm.setDefaultCommand(arm.setSpeedCommand(0));
+      arm.setDefaultCommand(arm.setPercentOutputCommand(0.05));
   }
 
   private void configureBindings() {
-    operatorController.y().onTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
+    operatorController.y().whileTrue(elevator.goToSetPointCommand(SetpointConstants.L_ONE_HEIGHT.in(Meters)));
     operatorController.b().whileTrue(elevator.setPercentOutCommand(.1));
-    operatorController.a().whileTrue(arm.setPercentOutputCommand(.02));
   }
 
 }
